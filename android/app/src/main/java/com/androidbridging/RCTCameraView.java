@@ -1,10 +1,9 @@
 package com.androidbridging;
 
 import android.content.Context;
-import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
-import com.pedro.rtplibrary.view.OpenGlView;
+import com.androidbridging.rtmp.CustomOpenGLView;
 
 public class RCTCameraView extends CustomOpenGLView {
 
@@ -17,6 +16,7 @@ public class RCTCameraView extends CustomOpenGLView {
 
     public RCTCameraView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
     }
+
+
 }
