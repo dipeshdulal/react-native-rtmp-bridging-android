@@ -37,3 +37,14 @@ This repo shows an example to bridge [RTMP library](https://github.com/pedroSG94
         <enum name="adjust_rotate" value="2"/>
         <enum name="fill_rotate" value="3"/>
     ```
+
+- Commands can be received by overriding `receiveCommand` method of view manager. Found that `getCommandsMap` method has been deprecated.
+In javascript side we can send commands using;
+    ```js
+    UIManager.dispatchViewManagerCommand(
+        findNodeHandle(this),
+        cmdName,
+        cmdArgs
+    )
+    ```
+    [[ 📚 Stack Overflow Reference ]](https://stackoverflow.com/questions/36265725/calling-a-android-native-ui-component-method-from-react-native-js-code) 
