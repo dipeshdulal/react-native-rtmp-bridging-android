@@ -1,4 +1,4 @@
-package com.androidbridging;
+package com.androidbridging.rtmp;
 
 import android.content.Context;
 import android.media.MediaCodec;

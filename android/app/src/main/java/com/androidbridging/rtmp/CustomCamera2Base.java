@@ -1,4 +1,4 @@
-package com.androidbridging;
+package com.androidbridging.rtmp;
 
 
 import android.content.Context;
@@ -13,7 +13,6 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.TextureView;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
