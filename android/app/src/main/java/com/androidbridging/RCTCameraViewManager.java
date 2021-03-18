@@ -14,6 +14,7 @@ import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.pedro.encoder.input.video.CameraHelper;
+import com.pedro.rtplibrary.util.BitrateAdapter;
 
 import net.ossrs.rtmp.ConnectCheckerRtmp;
 
@@ -35,6 +36,7 @@ public class RCTCameraViewManager extends SimpleViewManager<RCTCameraView> imple
     private SurfaceHolder surfaceHolder;
     private RCTCameraView cameraView;
     private CustomRTMPCamera2 rtmpCamera2;
+    private BitrateAdapter bitrateAdapter;
 
     @ReactProp(name="streamWidth")
     public void setStreamWidth(RCTCameraView view, int streamWidth) {
@@ -125,7 +127,13 @@ public class RCTCameraViewManager extends SimpleViewManager<RCTCameraView> imple
         rtmpCamera2 = new CustomRTMPCamera2(cameraView, new ConnectCheckerRtmp() {
             @Override
             public void onConnectionSuccessRtmp() {
-
+                bitrateAdapter = new BitrateAdapter(new BitrateAdapter.Listener() {
+                    @Override
+                    public void onBitrateAdapted(int bitrate) {
+                        rtmpCamera2.setVideoBitrateOnFly(bitrate);
+                    }
+                });
+                bitrateAdapter.setMaxBitrate(rtmpCamera2.getBitrate());
             }
 
             @Override
@@ -135,7 +143,9 @@ public class RCTCameraViewManager extends SimpleViewManager<RCTCameraView> imple
 
             @Override
             public void onNewBitrateRtmp(long bitrate) {
-
+                if(bitrateAdapter != null ){
+                    bitrateAdapter.adaptBitrate(bitrate);
+                }
             }
 
             @Override
@@ -162,7 +172,7 @@ public class RCTCameraViewManager extends SimpleViewManager<RCTCameraView> imple
     }
 
     public void startPublish(String streamKey) {
-        if(rtmpCamera2.prepareAudio() && rtmpCamera2.prepareVideo(streamHeight, streamWidth, 30, 20*1024, 2, 90)){
+        if(rtmpCamera2.prepareAudio() && rtmpCamera2.prepareVideo(streamHeight, streamWidth, 30, 700*1024, 5,90)){
             rtmpCamera2.startStream(streamUrl+streamKey);
 
             if(this.audioMuted){
