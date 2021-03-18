@@ -1,5 +1,6 @@
 package com.androidbridging;
 
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -13,6 +14,7 @@ import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
+import com.pedro.encoder.input.gl.render.filters.object.ImageObjectFilterRender;
 import com.pedro.encoder.input.video.CameraHelper;
 import com.pedro.rtplibrary.util.BitrateAdapter;
 
@@ -37,6 +39,8 @@ public class RCTCameraViewManager extends SimpleViewManager<RCTCameraView> imple
     private RCTCameraView cameraView;
     private CustomRTMPCamera2 rtmpCamera2;
     private BitrateAdapter bitrateAdapter;
+    private ThemedReactContext reactContext;
+    private ImageObjectFilterRender imageObjectFilterRender;
 
     @ReactProp(name="streamWidth")
     public void setStreamWidth(RCTCameraView view, int streamWidth) {
@@ -72,9 +76,9 @@ public class RCTCameraViewManager extends SimpleViewManager<RCTCameraView> imple
         if (rtmpCamera2 == null){return;}
 
         if(this.videoMuted) {
-            cameraView.muteVideo();
+            imageObjectFilterRender.setAlpha(1);
         } else {
-            cameraView.unMuteVideo();
+            imageObjectFilterRender.setAlpha(0);
         }
 
     }
@@ -118,6 +122,7 @@ public class RCTCameraViewManager extends SimpleViewManager<RCTCameraView> imple
         cameraView = new RCTCameraView(reactContext);
         surfaceHolder = cameraView.getHolder();
         surfaceHolder.addCallback(this);
+        this.reactContext = reactContext;
         return cameraView;
     }
 
@@ -169,6 +174,16 @@ public class RCTCameraViewManager extends SimpleViewManager<RCTCameraView> imple
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Log.d("RNCameraView", "surfaceChanged");
         rtmpCamera2.startPreview(CameraHelper.Facing.FRONT, streamHeight, streamWidth);
+        imageObjectFilterRender = new ImageObjectFilterRender();
+        rtmpCamera2.getGlInterface().setFilter(imageObjectFilterRender);
+        Log.d("width/height", "width: "+width+" height: "+height);
+
+        imageObjectFilterRender.setImage(
+                BitmapFactory.decodeResource(this.reactContext.getResources(), R.mipmap.pause)
+        );
+
+        imageObjectFilterRender.setAlpha(0f);
+
     }
 
     public void startPublish(String streamKey) {
