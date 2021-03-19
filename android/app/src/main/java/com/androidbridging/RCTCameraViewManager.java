@@ -173,6 +173,7 @@ public class RCTCameraViewManager extends SimpleViewManager<RCTCameraView> imple
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         Log.d("RNCameraView", "surfaceChanged");
+        rtmpCamera2.getGlInterface().setForceRender(true);
         rtmpCamera2.startPreview(CameraHelper.Facing.FRONT, streamHeight, streamWidth);
         imageObjectFilterRender = new ImageObjectFilterRender();
         rtmpCamera2.getGlInterface().setFilter(imageObjectFilterRender);
@@ -187,7 +188,7 @@ public class RCTCameraViewManager extends SimpleViewManager<RCTCameraView> imple
     }
 
     public void startPublish(String streamKey) {
-        if(rtmpCamera2.prepareAudio() && rtmpCamera2.prepareVideo(streamHeight, streamWidth, 30, 700*1024, 5,90)){
+        if(rtmpCamera2.prepareAudio() && rtmpCamera2.prepareVideo(streamHeight, streamWidth, 30, 512*1000, 5,90)){
             rtmpCamera2.startStream(streamUrl+streamKey);
 
             if(this.audioMuted){

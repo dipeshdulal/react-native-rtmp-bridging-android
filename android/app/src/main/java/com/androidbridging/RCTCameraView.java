@@ -12,7 +12,6 @@ public class RCTCameraView extends CustomOpenGLView {
         // 1 means fill
         this.setKeepAspectRatio(true);
         this.setAspectRatioMode(1);
-        this.setForceRender(true);
     }
 
     public RCTCameraView(Context context, AttributeSet attrs) {
